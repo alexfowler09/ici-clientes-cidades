@@ -1,0 +1,79 @@
+﻿
+@model IEnumerable<ProvaCandidato.Data.Entidade.Cliente>
+
+@{
+    ViewBag.Title = "Clientes";
+}
+
+<h2>Lista de Clientes</h2>
+
+<p>
+    @Html.ActionLink("Criar Novo", "Create")
+</p>
+
+
+<div id="div-filtrar" class="input-group" style="padding-top: 15px; padding-bottom: 15px;">
+    <input type="text" class="form-control" id="txtFiltro" placeholder="Busque pelo nome" value="@(ViewBag.txtFiltro ?? string.Empty)">
+    <span class="input-group-btn">
+        <button class="btn btn-primary" id="btFiltrar" type="button">Buscar</button>
+    </span>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nome)
+        </th>
+        <th>
+            Cidade
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataNascimento)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ativo)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cidade.Nome)
+            </td>
+            <td>
+                @Convert.ToDateTime(item.DataNascimento).ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ativo)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.Codigo }) |
+                @Html.ActionLink("Detalhes", "Details", new { id = item.Codigo }) |
+                @Html.ActionLink("Excluir", "Delete", new { id = item.Codigo })
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btFiltrar').click(function () {
+                var filtro = $('#txtFiltro').val();
+
+                if (filtro == "") 
+                    $('#div-filtrar').addClass("has-error");
+                else
+                    document.location = '@Url.Action("ClientesFiltroNome", "Clientes")?nome=' + filtro;                
+            });            
+        });
+    </script>
+}
+

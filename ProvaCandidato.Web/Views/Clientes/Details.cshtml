@@ -1,0 +1,116 @@
+﻿@model ProvaCandidato.Data.Entidade.Cliente
+
+@{
+    ViewBag.Title = "Detalhes";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Cliente</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataNascimento)
+        </dt>
+
+        <dd>
+            @Convert.ToDateTime(Model.DataNascimento).ToString("dd/MM/yyyy")
+        </dd>
+
+        <dt>
+            Cidade
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cidade.Nome)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ativo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ativo)
+        </dd>
+
+        <dt>
+            Observaçoes
+        </dt>
+        @foreach (var co in Model.Observacoes)
+        {
+            <dd>
+                @co.Observacao
+            </dd>
+        }
+
+    </dl>
+</div>
+<button id="btAdicionarObservacao" class="btn btn-primary" style="margin-bottom: 15px; margin-top: 15px">Adicionar Observações</button>
+
+<div id="AdicionarObservacao"></div>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Codigo }) |
+    @Html.ActionLink("Voltar para lista", "Index")
+</p>
+
+@section Scripts {    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btAdicionarObservacao').click(function () {
+                $('#AdicionarObservacao').dialog({
+                    autoOpen: true,
+                    position: { my: "center", at: "top+350", of: window },
+                    width: 1000,
+                    resizable: false,
+                    title: 'Adicionar Observação',
+                    modal: true,
+                    open: function () {
+                        $(this).load('@Url.Action("CarregarClienteObservacaoPartialView", "Clientes")')
+                    },
+                    buttons: {
+                        "Adicionar Observação": function () {                            
+                            adicionarObservacao($(this));
+                        },
+                        "Cancelar": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+        function adicionarObservacao(modal) {            
+            var dados = {
+                Observacao: $('#Observacao').val(),
+                ClienteId: @Model.Codigo
+            };            
+
+            $.ajax({
+                url: '@Url.Action("AdicionarClienteObservacao", "Clientes")',
+                type: 'POST',
+                data: dados,
+                success: function (data) {
+                    if (data.result) {
+                        modal.dialog("close");
+                        location.reload();
+                    }
+                    else {
+                        $('#showErrorMessage').append(data.responseText)
+                    }
+                }
+            });
+        };
+    </script>
+}
