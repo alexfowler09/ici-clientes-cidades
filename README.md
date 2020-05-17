@@ -1,5 +1,7 @@
 # Instruções
 
+Para o desenvolvimento do projeto foi utilizado o Visual Studio 2017
+
 # Connection String
 
 Alterar connection string no projeto ProvaCandidato.Data, classe ContextoPrincipal
